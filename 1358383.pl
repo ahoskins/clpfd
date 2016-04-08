@@ -1,17 +1,21 @@
+% Andrew Hoskins
+% CMPUT 325 Assignment 4 - Prolog
+% arhoskin - 1358383
+
 :- use_module(library(clpfd)).
 
-% Question 1 - Four Squares
-% TODO: problem, it's an inf loop after it gets the answers....
+%%%%%%%%%%%%%%%%%%%%%%%%%% Question 1 - Four Squares %%%%%%%%%%%%%%%%%%%%%%%%%%
+% Note: known problem of infinite loop after giving all answers :(
 
-fourSquare(N, L):-
+fourSquares(N, L):-
   ordered(L),
   length(L, 4),
   sumSquared(L, N).
 
-fourSquare(N, L):-
-  append(L1, [_], L),
-  % append(L, [_], L1),
-  fourSquare(N, L1).
+fourSquares(N, [_|L]):-
+  length(L, Len),
+  Len #< 4,
+  fourSquares(N, L).
 
 sumSquared([], 0).
 sumSquared([X|Tail], Sum):-
@@ -28,10 +32,14 @@ ordered([X|L], Last):-
   X #>= Last,
   ordered(L, X).
 
-% Question 2
+%%%%%%%%%%%%%%%%%%%%%%%%% Question 2 - War and Peace %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-disarm([], [], []).
-disarm(A, B, [[[ASel1, ASel2],[BSel]] | Out]):-
+disarm(A, B, Out):-
+  disarm(A, B, Out1, _),
+  sort(Out1, Out).
+
+disarm([], [], [], _).
+disarm(A, B, [[[ASel1, ASel2],[BSel]] | Out], _):-
   length(A, LenA),
   LenA #>= 2,
   length(B, LenB),
@@ -41,9 +49,10 @@ disarm(A, B, [[[ASel1, ASel2],[BSel]] | Out]):-
   select(ASel2, ARem, ARemRem),
   select(BSel, B, BRem),
   BSel #= ASel1 + ASel2,
-  disarm(ARemRem, BRem, Out).
 
-disarm(A, B, [[[BSel1, BSel2],[ASel]] | Out]):-
+  disarm(ARemRem, BRem, Out, _).
+
+disarm(A, B, [[[BSel1, BSel2],[ASel]] | Out], _):-
   length(A, LenA),
   LenA #>= 1,
   length(B, LenB),
@@ -53,4 +62,5 @@ disarm(A, B, [[[BSel1, BSel2],[ASel]] | Out]):-
   select(BSel2, BRem, BRemRem),
   select(ASel, A, ARem),
   ASel #= BSel1 + BSel2,
-  disarm(ARem, BRemRem, Out).
+
+  disarm(ARem, BRemRem, Out, _).
