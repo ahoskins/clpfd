@@ -30,27 +30,20 @@ ordered([X|L], Last):-
 
 % Question 2
 
-disarm([], [], Out).
-disarm(A, B, Out):-
+disarm([], [], []).
+disarm(A, B, [[[ASel1, ASel2],[BSel]] | Out]):-
   length(A, LenA),
   LenA #>= 2,
   length(B, LenB),
   LenB #>= 1,
 
-  print(Out),
-  print(LenA),
-
   select(ASel1, A, ARem),
   select(ASel2, ARem, ARemRem),
   select(BSel, B, BRem),
   BSel #= ASel1 + ASel2,
-  append(Out1, [[ASel1, ASel2],[BSel]], Out),
-  disarm(ARemRem, BRem, Out1).
-    % TODO: label a and a1 first before select b?
+  disarm(ARemRem, BRem, Out).
 
-
-% only run this predicate if A has least 1 and B has at least 2
-disarm(A, B, Out):-
+disarm(A, B, [[[BSel1, BSel2],[ASel]] | Out]):-
   length(A, LenA),
   LenA #>= 1,
   length(B, LenB),
@@ -60,18 +53,4 @@ disarm(A, B, Out):-
   select(BSel2, BRem, BRemRem),
   select(ASel, A, ARem),
   ASel #= BSel1 + BSel2,
-  append(Out1, [[BSel1, BSel2],[ASel]], Out),
-  disarm(ARem, BRemRem, Out1).
-
-% disarm([X], 0, Out).
-% disarm(0, [X], Out).
-
-
-
-
-
-
-
-
-
-%
+  disarm(ARem, BRemRem, Out).
